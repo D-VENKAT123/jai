@@ -1,0 +1,68 @@
+using System;
+
+namespace AuthenticationApp
+{
+    class Program
+    {
+        // Dummy user data (in real applications, use a database or secure storage)
+        static string validUsername = "admin";
+        static string validPassword = "password123";  // Never store plain passwords in real apps
+
+        static void Main(string[] args)
+        {
+            Console.WriteLine("=== User Authentication ===");
+            
+            // Ask for username
+            Console.Write("Enter Username: ");
+            string inputUsername = Console.ReadLine();
+
+            // Ask for password
+            Console.Write("Enter Password: ");
+            string inputPassword = ReadPassword();  // Hide password input
+
+            // Authenticate
+            if (AuthenticateUser(inputUsername, inputPassword))
+            {
+                Console.WriteLine("\nLogin Successful. Welcome!");
+            }
+            else
+            {
+                Console.WriteLine("\nInvalid credentials. Access denied.");
+            }
+
+            Console.ReadLine();
+        }
+
+        // Authentication logic can be done through
+        static bool AuthenticateUser(string username, string password)
+        {
+            return username == validUsername && password == validPassword;
+        }
+
+        // Hide password input on console
+        static string ReadPassword()
+        {
+            string password = "";
+            ConsoleKey key;
+
+            do
+            {
+                var keyInfo = Console.ReadKey(intercept: true);
+                key = keyInfo.Key;
+
+                if (key == ConsoleKey.Backspace && password.Length > 0)
+                {
+                    Console.Write("\b \b");
+                    password = password[0..^1];
+                }
+                else if (!char.IsControl(keyInfo.KeyChar))
+                {
+                    Console.Write("*");
+                    password += keyInfo.KeyChar;
+                }
+            } while (key != ConsoleKey.Enter);
+
+            return password;
+        }
+    }
+}
